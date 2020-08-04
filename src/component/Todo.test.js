@@ -1,43 +1,91 @@
-import React from 'react'
-import { configure, shallow } from 'enzyme';
-import Adapter from 'enzyme-adapter-react-16';
-import Todo from './Todo';
-import renderer from 'react-test-renderer';
+import React from "react";
+import { configure, shallow } from "enzyme";
+import Adapter from "enzyme-adapter-react-16";
+import renderer from "react-test-renderer";
+import Todo from "./Todo";
 
-configure({ adapter: new Adapter()});
+configure({ adapter: new Adapter() });
 
-describe("todo testing", () => {
-    let wrapper;
-    beforeEach(() => {
-         wrapper = shallow( <Todo /> );
-    });
+const setup = (props = {}, state = null) => {
+  const wrapper = shallow(<Todo {...props} />).dive();
+  if (state) wrapper.setState(state);
+  return wrapper;
+};
 
-    it('renders correctly when there are no items', () => {
-        const tree = renderer.create(<Todo />).toJSON();
-        expect(tree).toMatchSnapshot();
-      });
+const findByTestAttr = (wrapper, val) => {
+  return wrapper.find(`[data-test="${val}"]`);
+};
 
-    it("should render the wrapper", () => {
-        expect(wrapper).toBeDefined();
-    })
-    it("should call the functions", () => {
-        const { add, update, deleteTodo } = wrapper.instance();
-        add();
-        update( {target: { value: "hello" } })
-        deleteTodo( {key: "123"});
-    })
-    it("should check the input value", () => {
-        wrapper.find("input").simulate("change", {
-            target: { value: "hello" }
-        })
-    })
-    it('should render the heading', () => {
-        expect(wrapper.find("h1").text()).toContain("todo list");
-    })
-    it('should render the add button to check initial click', () => {
-        wrapper.find("#addBtn").simulate("click");
-        const text = wrapper.find("items")
-        expect(text.length).toBe(0);
-    })
-    
-})
+test("render correctly", () => {
+  const tree = renderer.create(<Todo />).toJSON();
+  expect(tree).toMatchSnapshot();
+});
+
+test("render without crashing", () => {
+  const wrapper = setup();
+  const appComponent = findByTestAttr(wrapper, "main-component");
+  expect(appComponent.length).toBe(1);
+});
+
+test("render add button", () => {
+  const wrapper = setup();
+  const button = findByTestAttr(wrapper, "add-btn");
+  expect(button.length).toBe(1);
+});
+
+test("render input field", () => {
+  const wrapper = setup();
+  const input = findByTestAttr(wrapper, "input-field");
+  expect(input.length).toBe(1);
+});
+
+test("initially empty list item ", () => {
+  const wrapper = setup();
+  const initialItemArr = wrapper.state("items");
+  expect(initialItemArr.length).toBe(0);
+});
+
+test("handling add item function", () => {
+  const wrapper = setup();
+  const newItems = {
+    text: "abc",
+    key: "123",
+  };
+  const counter = 5;
+  wrapper.setState({
+    items: newItems,
+    counter: counter + 1,
+    currentItem: {
+      text: "",
+      key: "",
+    },
+  });
+  const expected = {
+    items: newItems,
+    counter: 6,
+    currentItem: {
+      text: "abc",
+      key: "123",
+    },
+  };
+  const addItems = wrapper.instance().addItem();
+  const spy = jest.spyOn(addItems());
+  const mockPreventDefault = jest.fn();
+  const event = {
+    preventDefault: mockPreventDefault,
+  };
+  const button = findByTestAttr(wrapper, "add-btn");
+  button.simulate("click", event);
+  expect(spy).toHaveBeenCalledWith(expected);
+});
+
+test("handling input function", () => {
+  const wrapper = setup();
+  const instance = wrapper.instance();
+  const event = {
+    target: { value: "the-value" },
+  };
+  expect(instance.state.currentItem.text).toBe("");
+  instance.handleInput(event);
+  expect(instance.state.currentItem.text).toBe("the-value");
+});

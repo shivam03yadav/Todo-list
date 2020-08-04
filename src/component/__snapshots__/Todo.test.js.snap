@@ -1,27 +1,87 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`todo testing renders correctly when there are no items 1`] = `
-<div>
-  <h1>
-     todo list
-  </h1>
-  <h4>
-    Count is 
-    0
-  </h4>
-  <input
-    className="input"
-    onChange={[Function]}
-    type="text"
-    value=""
-  />
-  <button
-    id="addBtn"
-    onClick={[Function]}
-    type="button"
-  >
-    add item
-  </button>
-  <ul />
+exports[`render correctly 1`] = `
+<div
+  data-test="main-component"
+>
+  <header>
+    <h1>
+      Todo List has 
+      0
+       item
+    </h1>
+    <form
+      id="to-do-form"
+    >
+      <div
+        className="MuiFormControl-root MuiTextField-root WithStyles(ForwardRef(TextField))-root-5 Todo-margin-3"
+        data-test="input-field"
+      >
+        <label
+          className="MuiFormLabel-root MuiInputLabel-root MuiInputLabel-formControl MuiInputLabel-animated MuiInputLabel-outlined"
+          data-shrink={false}
+        >
+          Add Item
+        </label>
+        <div
+          className="MuiInputBase-root MuiOutlinedInput-root MuiInputBase-formControl"
+          onClick={[Function]}
+        >
+          <input
+            aria-invalid={false}
+            autoFocus={false}
+            className="MuiInputBase-input MuiOutlinedInput-input"
+            disabled={false}
+            onAnimationStart={[Function]}
+            onBlur={[Function]}
+            onChange={[Function]}
+            onFocus={[Function]}
+            placeholder="Enter Text"
+            required={false}
+            type="text"
+            value=""
+          />
+          <fieldset
+            aria-hidden={true}
+            className="PrivateNotchedOutline-root-6 MuiOutlinedInput-notchedOutline"
+          >
+            <legend
+              className="PrivateNotchedOutline-legendLabelled-8"
+            >
+              <span>
+                Add Item
+              </span>
+            </legend>
+          </fieldset>
+        </div>
+      </div>
+      <button
+        className="MuiButtonBase-root MuiButton-root MuiButton-contained Todo-margin-3 MuiButton-containedPrimary MuiButton-containedSizeLarge MuiButton-sizeLarge"
+        data-test="add-btn"
+        disabled={false}
+        onBlur={[Function]}
+        onClick={[Function]}
+        onDragLeave={[Function]}
+        onFocus={[Function]}
+        onKeyDown={[Function]}
+        onKeyUp={[Function]}
+        onMouseDown={[Function]}
+        onMouseLeave={[Function]}
+        onMouseUp={[Function]}
+        onTouchEnd={[Function]}
+        onTouchMove={[Function]}
+        onTouchStart={[Function]}
+        tabIndex={0}
+        type="submit"
+      >
+        <span
+          className="MuiButton-label"
+        >
+          Add
+        </span>
+      </button>
+    </form>
+  </header>
+  <div />
 </div>
 `;
