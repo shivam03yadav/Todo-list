@@ -3,6 +3,7 @@ import { configure, shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import renderer from "react-test-renderer";
 import Todo from "./Todo";
+import sinon from "sinon";
 
 configure({ adapter: new Adapter() });
 
@@ -47,36 +48,15 @@ test("initially empty list item ", () => {
 
 test("handling add item function", () => {
   const wrapper = setup();
-  const newItems = {
-    text: "abc",
-    key: "123",
+  const spy = sinon.spy();
+  const mockPreventDefault = () => {
+    spy();
   };
-  const counter = 5;
-  wrapper.setState({
-    items: newItems,
-    counter: counter + 1,
-    currentItem: {
-      text: "",
-      key: "",
-    },
-  });
-  const expected = {
-    items: newItems,
-    counter: 6,
-    currentItem: {
-      text: "abc",
-      key: "123",
-    },
-  };
-  const addItems = wrapper.instance().addItem();
-  const spy = jest.spyOn(addItems());
-  const mockPreventDefault = jest.fn();
   const event = {
     preventDefault: mockPreventDefault,
   };
-  const button = findByTestAttr(wrapper, "add-btn");
-  button.simulate("click", event);
-  expect(spy).toHaveBeenCalledWith(expected);
+  wrapper.instance().addItem(event);
+  expect(spy.called).toBe(true);
 });
 
 test("handling input function", () => {
