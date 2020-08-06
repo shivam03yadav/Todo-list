@@ -63,7 +63,6 @@ class Todo extends Component {
     const newItem = currentItem;
     if (newItem.text !== "") {
       const newItems = [...items, newItem];
-      console.log("this is new item ", newItem);
       this.setState({
         items: newItems,
         counter: counter + 1,
@@ -73,6 +72,14 @@ class Todo extends Component {
         },
       });
     }
+  };
+
+  incrementCounter = (e) => {
+    e.preventDefault();
+    const { counter } = this.state;
+    this.setState({
+      counter: counter + 1,
+    });
   };
 
   deleteItem = (key) => {

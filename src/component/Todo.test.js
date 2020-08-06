@@ -3,7 +3,6 @@ import { configure, shallow } from "enzyme";
 import Adapter from "enzyme-adapter-react-16";
 import renderer from "react-test-renderer";
 import Todo from "./Todo";
-import sinon from "sinon";
 
 configure({ adapter: new Adapter() });
 
@@ -28,18 +27,6 @@ test("render without crashing", () => {
   expect(appComponent.length).toBe(1);
 });
 
-test("render add button", () => {
-  const wrapper = setup();
-  const button = findByTestAttr(wrapper, "add-btn");
-  expect(button.length).toBe(1);
-});
-
-test("render input field", () => {
-  const wrapper = setup();
-  const input = findByTestAttr(wrapper, "input-field");
-  expect(input.length).toBe(1);
-});
-
 test("initially empty list item ", () => {
   const wrapper = setup();
   const initialItemArr = wrapper.state("items");
@@ -48,15 +35,17 @@ test("initially empty list item ", () => {
 
 test("handling add item function", () => {
   const wrapper = setup();
-  const spy = sinon.spy();
-  const mockPreventDefault = () => {
-    spy();
-  };
-  const event = {
-    preventDefault: mockPreventDefault,
-  };
-  wrapper.instance().addItem(event);
-  expect(spy.called).toBe(true);
+  const instance = wrapper.instance();
+  wrapper.setState({
+    currentItem: {
+      text: "abc",
+      key: "123",
+    },
+  });
+  expect(instance.state.counter).toBe(0);
+  const button = findByTestAttr(wrapper, "add-btn");
+  button.simulate("click", { preventDefault: () => {} });
+  expect(instance.state.counter).toBe(1);
 });
 
 test("handling input function", () => {
@@ -66,6 +55,21 @@ test("handling input function", () => {
     target: { value: "the-value" },
   };
   expect(instance.state.currentItem.text).toBe("");
-  instance.handleInput(event);
+  const button = findByTestAttr(wrapper, "input-field");
+  button.simulate("click", event);
   expect(instance.state.currentItem.text).toBe("the-value");
+});
+
+test("handling delete function", () => {
+  const wrapper = setup();
+  const instance = wrapper.instance();
+  wrapper.setState({
+    counter: 5,
+  });
+  const key = {
+    key: 123,
+  };
+  expect(wrapper.find("h1").text()).toBe("Todo List has 5 item");
+  instance.deleteItem(key);
+  expect(wrapper.find("h1").text()).toBe("Todo List has 4 item");
 });

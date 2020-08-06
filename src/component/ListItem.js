@@ -42,7 +42,7 @@ function ListItems(props) {
   const items = props.items;
   const ListItems = items.map((item) => {
     return (
-      <div className="list" key={item.key}>
+      <div data-test="main-component-list" className="list" key={item.key}>
         <p>
           <CssTextField
             className={classes.margin}

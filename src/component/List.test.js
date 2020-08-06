@@ -5,18 +5,23 @@ import ListItems from "./ListItem";
 
 configure({ adapter: new Adapter() });
 
-const setup = (props = {}) => {
-  const wrapper = shallow(<ListItems {...props} />);
+const props = {
+  items: [
+    { text: "abc", key: 123 },
+    { text: "efg", key: 321 },
+  ],
+};
+const setup = (props) => {
+  const wrapper = shallow(<ListItems {...props} />).dive();
   return wrapper;
 };
 
-test("handling delete function", () => {
-  const wrapper = setup();
-  const spy = jest.spyOn(wrapper.instance(), "deleteItem");
-  const expected = { key: 123 };
-  wrapper
-    .find(`[data-test="delete-btn"]`)
-    .find(`data-test="delete-btn-one"`)
-    .simulate("click");
-  expect(spy.toHaveBeenCalledWith(expected));
+const findByTestAttr = (wrapper, val) => {
+  return wrapper.find(`[data-test="${val}"]`);
+};
+
+test("render without crashing", () => {
+  const wrapper = setup(props);
+  const appComponent = findByTestAttr(wrapper, "main-component-list");
+  expect(appComponent.length).toBe(2);
 });
